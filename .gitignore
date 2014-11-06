@@ -1,0 +1,10 @@
+# git ignore file
+Release/*
+Debug/*
+x64/*
+kitschensync/x64/*
+kitschensync/Debug/*
+kitschensync/Release/*
+*.opensdf
+*.sdf
+
