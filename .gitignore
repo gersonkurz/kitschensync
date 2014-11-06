@@ -7,4 +7,6 @@ kitschensync/Debug/*
 kitschensync/Release/*
 *.opensdf
 *.sdf
+ipch/*
+*.suo
 
