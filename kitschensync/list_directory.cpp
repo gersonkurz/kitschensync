@@ -4,7 +4,7 @@
 #include "stdafx.h"
 #include "list_directory.h"
 
-directory_description list_directory::read(LPCTSTR directory)
+directory_description* list_directory::read(LPCTSTR directory)
 {
 
     DWORD t0 = GetTickCount();
@@ -13,17 +13,17 @@ directory_description list_directory::read(LPCTSTR directory)
 
     
 
-    directory_description _result(directory);
+    directory_description* result = new directory_description(directory);
 
     std::deque<directory_description*> directories;
-    directories.push_back(&_result);
+    directories.push_back(result);
 
     while (!directories.empty())
     {
         directory_description* current(*directories.begin());
         directories.pop_front();
         
-        directory = current->path();
+        directory = current->get_path();
 
         assert(directory != nullptr);
         assert(*directory);
@@ -83,5 +83,5 @@ directory_description list_directory::read(LPCTSTR directory)
     }
 
     printf("Time to read %ld items in '%s': %ld ms.\r\n", nItems, original_name, GetTickCount() - t0);
-    return _result;
+    return result;
 }

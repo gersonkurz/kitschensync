@@ -32,7 +32,9 @@ public:
     directory_description* push(const char* path, WIN32_FIND_DATA& wfd);
 
     // created the first time it is used, afterwards reused
-    const char* path() const;
+    const char* get_path() const;
+
+    std::string get_in_path(const char* part) const;
 
     long long total_files() const
     {
@@ -83,32 +85,6 @@ public:
     bool is_root() const
     {
         return m_parent != nullptr;
-    }
-
-    void find_missing_files(
-        const directory_description& other, 
-        std::vector<const file_description*>& missing) const
-    {
-        for (auto var : m_files)
-        {
-            if (!other.does_file_exist(var.first))
-            {
-                missing.push_back(var.second);
-            }
-        }
-    }
-
-    void find_missing_directories(
-        const directory_description& other,
-        std::vector<const directory_description*>& missing) const
-    {
-        for (auto var : m_subdirectories)
-        {
-            if (!other.does_subdirectory_exist(var.first))
-            {
-                missing.push_back(var.second);
-            }
-        }
     }
 
 private:

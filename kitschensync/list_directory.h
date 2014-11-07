@@ -6,7 +6,7 @@
 class list_directory
 {
 public:
-    directory_description read(LPCTSTR directory);
+    directory_description* read(LPCTSTR directory);
 
 private:
     void ensure_path_buffer_size_is_at_least(size_t size_in_bytes)

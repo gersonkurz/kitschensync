@@ -5,12 +5,10 @@ class directory_description;
 
 #include "directory_differences.h"
 
-
-
 class directory_comparer
 {
 public:
-    directory_differences compare(const directory_description& a, const directory_description& b) const;
+    directory_differences* compare_directories(const directory_description* a, const directory_description* b) const;
 
 
 private:

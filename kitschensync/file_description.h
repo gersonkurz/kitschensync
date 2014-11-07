@@ -19,6 +19,18 @@ public:
     {
     }
 
+private:
+    file_description(const file_description& objectSrc);
+    file_description& operator=(const file_description& objectSrc);
+
+public:
+    const char* get_path() const;
+
+    const char* get_name() const
+    {
+        return m_name.c_str();
+    }
+
     long long get_file_size() const
     {
         return m_size;
@@ -34,6 +46,7 @@ private:
     long long m_size;
     long long m_timestamp;
     std::string m_name;
+    mutable std::string m_path;
 };
 
 #endif // kitschensync_file_description_h

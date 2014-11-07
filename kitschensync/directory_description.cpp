@@ -45,10 +45,12 @@ directory_description* directory_description::push(const char* path, WIN32_FIND_
     }
 }
 
-// created the first time it is used, afterwards reused
-const char* directory_description::path() const
+std::string directory_description::get_in_path(const char* part) const
 {
     std::deque<std::string> sections;
+
+    if (part)
+        sections.push_front(part);
 
     const directory_description* dl = this;
     while (dl)
@@ -72,8 +74,16 @@ const char* directory_description::path() const
         }
     }
     buffer.push_back(0);
+    return &buffer[0];
+}
 
-    m_path = &buffer[0];
+// created the first time it is used, afterwards reused
+const char* directory_description::get_path() const
+{
+    if (m_path.size() == 0)
+    {
+        m_path = get_in_path(nullptr);
+    }
     return m_path.c_str();
 
 }

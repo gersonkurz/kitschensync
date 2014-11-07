@@ -20,45 +20,37 @@ typedef struct
     const file_description* b;
 } file_mismatch;
 
+
 class directory_differences // recursive 
 {
 public:
-    directory_differences(const directory_description& a, const directory_description& b)
+    directory_differences(const directory_description* a, const directory_description* b)
         : 
-        m_directory_a(a),
-        m_directory_b(b)
+        m_a(a),
+        m_b(b)
     {
-
     }
+
+    void dump() const;
 
 private:
     directory_differences(const directory_differences& objectSrc);
     directory_differences& operator=(const directory_differences& objectSrc);
 
 public:
-    directory_differences(directory_differences&& moveSrc)
-        :
-        m_directory_a(moveSrc.m_directory_a),
-        m_directory_b(moveSrc.m_directory_b),
-        m_files_missing_in_a(moveSrc.m_files_missing_in_a),
-        m_files_missing_in_b(moveSrc.m_files_missing_in_b),
-        m_file_mismatches(moveSrc.m_file_mismatches),
-        m_directories_missing_in_a(moveSrc.m_directories_missing_in_a),
-        m_directories_missing_in_b(moveSrc.m_directories_missing_in_b)
-    {
-    }
-
-    const directory_description& m_directory_a;
-    const directory_description& m_directory_b;
+    const directory_description* m_a;
+    const directory_description* m_b;
 
     std::vector<const file_description*> m_files_missing_in_a;
     std::vector<const file_description*> m_files_missing_in_b;
     std::vector<file_mismatch> m_file_mismatches;
+
     std::vector<const directory_description*> m_directories_missing_in_a;
     std::vector<const directory_description*> m_directories_missing_in_b;
 
     // subdirectories that exist in both a and b, but that are - somewhere - different
-    std::vector<directory_differences*> m_directory_differences;
+    // now this is where we're going to: differences in directories
+    std::vector<const directory_differences*> m_directory_mismatches;
 };
 
 #endif // kitschensync_directory_differences_h
