@@ -20,6 +20,14 @@ typedef struct
     const file_description* b;
 } file_mismatch;
 
+enum class relationship_order
+{
+    undefined,
+    a_newer_than_b,
+    b_newer_than_a
+};
+
+
 
 class directory_differences // recursive 
 {
@@ -32,6 +40,9 @@ public:
     }
 
     void dump() const;
+
+    bool determine_relationship(const directory_description** pa, const directory_description** pb) const;
+    relationship_order determine_relationship_order() const;
 
 private:
     directory_differences(const directory_differences& objectSrc);

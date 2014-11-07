@@ -14,8 +14,20 @@ int _tmain(int, _TCHAR* [])
     directory_differences* diffs = dc.compare_directories(a, b);
     if (diffs)
     {
-        printf("OK too: found mismatches!\r\n");
-        diffs->dump();
+        const directory_description* newer;
+        const directory_description* older;
+
+        if (diffs->determine_relationship(&newer, &older))
+        {
+            printf("%s is newer than %s\r\n",
+                newer->get_path(),
+                older->get_path());
+        }
+        else
+        {
+            printf("*** WARNING: was unable to determine relationship between these two directories...\r\n");
+            diffs->dump();
+        }
         delete diffs;
     }
     else

@@ -3,6 +3,25 @@
 #include "directory_differences.h"
 #include "file_description.h"
 
+bool directory_differences::determine_relationship(const directory_description** pa, const directory_description** pb) const
+{
+    switch (determine_relationship_order())
+    {
+    case relationship_order::a_newer_than_b:
+        *pa = m_a;
+        *pb = m_b;
+        return true;
+
+    case relationship_order::b_newer_than_a:
+        *pa = m_b;
+        *pb = m_a;
+        return true;
+
+    default:
+        return false;
+    }
+}
+
 void directory_differences::dump() const
 {
     if (m_files_missing_in_a.size())
@@ -81,4 +100,67 @@ void directory_differences::dump() const
         }
     }
 
+}
+
+relationship_order directory_differences::determine_relationship_order() const
+{
+    bool a_is_newer_than_b = true;
+    bool b_is_newer_than_a = true;
+
+    if (m_files_missing_in_a.size())
+    {
+        a_is_newer_than_b = false;
+    }
+
+    if (m_files_missing_in_b.size())
+    {
+        b_is_newer_than_a = false;
+    }
+
+    if (m_directories_missing_in_a.size())
+    {
+        a_is_newer_than_b = false;
+    }
+
+    if (m_directories_missing_in_b.size())
+    {
+        b_is_newer_than_a = false;
+    }
+
+    if (m_file_mismatches.size())
+    {
+        for (auto& var : m_file_mismatches)
+        {
+            switch (var.reason)
+            {
+            case file_mismatch_reason::a_is_newer_than_b:
+                b_is_newer_than_a = false;
+                break;
+            case file_mismatch_reason::a_is_older_than_b:
+                a_is_newer_than_b = false;
+                break;
+            }
+        }
+
+        for (auto var : m_directory_mismatches)
+        {
+            switch (var->determine_relationship_order())
+            {
+            case relationship_order::a_newer_than_b:
+                b_is_newer_than_a = false;
+                break;
+
+            case relationship_order::b_newer_than_a:
+                a_is_newer_than_b = false;
+                break;
+            }
+        }
+    }
+    if (a_is_newer_than_b && !b_is_newer_than_a)
+        return relationship_order::a_newer_than_b;
+
+    if (b_is_newer_than_a && !a_is_newer_than_b)
+        return relationship_order::b_newer_than_a;
+
+    return relationship_order::undefined;
 }
