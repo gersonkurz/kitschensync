@@ -3,12 +3,12 @@
 
 class directory_description;
 
-#include "directory_differences.h"
+#include "directory_mismatch.h"
 
 class directory_comparer
 {
 public:
-    directory_differences* compare_directories(const directory_description* a, const directory_description* b) const;
+    directory_mismatch* compare_directories(const directory_description* a, const directory_description* b) const;
 
 
 private:

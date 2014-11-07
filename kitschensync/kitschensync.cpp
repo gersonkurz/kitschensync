@@ -2,7 +2,7 @@
 #include "directory_description.h"
 #include "directory_comparer.h"
 #include "list_directory.h"
-#include "directory_differences.h"
+#include "directory_mismatch.h"
 
 int _tmain(int, _TCHAR* [])
 {
@@ -11,7 +11,7 @@ int _tmain(int, _TCHAR* [])
     directory_description* b(lister.read("T:\\kitschensync"));
     
     directory_comparer dc;
-    directory_differences* diffs = dc.compare_directories(a, b);
+    directory_mismatch* diffs = dc.compare_directories(a, b);
     if (diffs)
     {
         const directory_description* newer;

@@ -147,7 +147,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="directory_comparer.h" />
-    <ClInclude Include="directory_differences.h" />
+    <ClInclude Include="directory_mismatch.h" />
     <ClInclude Include="directory_description.h" />
     <ClInclude Include="file_description.h" />
     <ClInclude Include="list_directory.h" />
@@ -156,7 +156,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="directory_comparer.cpp" />
-    <ClCompile Include="directory_differences.cpp" />
+    <ClCompile Include="directory_mismatch.cpp" />
     <ClCompile Include="directory_description.cpp" />
     <ClCompile Include="file_description.cpp" />
     <ClCompile Include="kitschensync.cpp" />

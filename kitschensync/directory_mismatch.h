@@ -29,10 +29,10 @@ enum class relationship_order
 
 
 
-class directory_differences // recursive 
+class directory_mismatch // recursive 
 {
 public:
-    directory_differences(const directory_description* a, const directory_description* b)
+    directory_mismatch(const directory_description* a, const directory_description* b)
         : 
         m_a(a),
         m_b(b)
@@ -45,8 +45,8 @@ public:
     relationship_order determine_relationship_order() const;
 
 private:
-    directory_differences(const directory_differences& objectSrc);
-    directory_differences& operator=(const directory_differences& objectSrc);
+    directory_mismatch(const directory_mismatch& objectSrc);
+    directory_mismatch& operator=(const directory_mismatch& objectSrc);
 
 public:
     const directory_description* m_a;
@@ -61,7 +61,7 @@ public:
 
     // subdirectories that exist in both a and b, but that are - somewhere - different
     // now this is where we're going to: differences in directories
-    std::vector<const directory_differences*> m_directory_mismatches;
+    std::vector<const directory_mismatch*> m_directory_mismatches;
 };
 
 #endif // kitschensync_directory_differences_h

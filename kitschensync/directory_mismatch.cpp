@@ -1,9 +1,9 @@
 #include "stdafx.h"
 #include "directory_description.h"
-#include "directory_differences.h"
+#include "directory_mismatch.h"
 #include "file_description.h"
 
-bool directory_differences::determine_relationship(const directory_description** pa, const directory_description** pb) const
+bool directory_mismatch::determine_relationship(const directory_description** pa, const directory_description** pb) const
 {
     switch (determine_relationship_order())
     {
@@ -22,7 +22,7 @@ bool directory_differences::determine_relationship(const directory_description**
     }
 }
 
-void directory_differences::dump() const
+void directory_mismatch::dump() const
 {
     if (m_files_missing_in_a.size())
     {
@@ -102,7 +102,7 @@ void directory_differences::dump() const
 
 }
 
-relationship_order directory_differences::determine_relationship_order() const
+relationship_order directory_mismatch::determine_relationship_order() const
 {
     bool a_is_newer_than_b = true;
     bool b_is_newer_than_a = true;
