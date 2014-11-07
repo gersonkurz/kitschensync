@@ -12,14 +12,40 @@ struct file_reference
 class directory_differences // recursive 
 {
 public:
+    directory_differences(const directory_listing& a, const directory_listing& b)
+        : 
+        m_directory_a(a),
+        m_directory_b(b)
+    {
 
-    directory_listing* m_directory_a;
-    directory_listing* m_directory_b;
+    }
 
-    std::vector<int> m_files_missing_in_a;
-    std::vector<int> m_files_missing_in_b;
-    std::vector<int> m_directories_missing_in_a;    // the 'int' is an index into m_directory_b->m_subdirectories
-    std::vector<int> m_directories_missing_in_b;    // the 'int' is an index into m_directory_b->m_subdirectories
+private:
+    directory_differences(const directory_differences& objectSrc);
+    directory_differences& operator=(const directory_differences& objectSrc);
+
+public:
+    directory_differences(directory_differences&& moveSrc)
+        :
+        m_directory_a(moveSrc.m_directory_a),
+        m_directory_b(moveSrc.m_directory_b),
+        m_files_missing_in_a(moveSrc.m_files_missing_in_a),
+        m_files_missing_in_b(moveSrc.m_files_missing_in_b),
+        m_directories_missing_in_a(moveSrc.m_directories_missing_in_a),
+        m_directories_missing_in_b(moveSrc.m_directories_missing_in_b)
+    {
+    }
+
+
+    const directory_listing& m_directory_a;
+    const directory_listing& m_directory_b;
+
+    // TODO: introduce a class file_listing that is a wrapper around WIN32_FIND_DATA
+    std::vector<const WIN32_FIND_DATA*> m_files_missing_in_a;
+    std::vector<const WIN32_FIND_DATA*> m_files_missing_in_b;
+
+    std::vector<const directory_listing*> m_directories_missing_in_a;
+    std::vector<const directory_listing*> m_directories_missing_in_b;
 
     // subdirectories that exist in both a and b, but that are - somewhere - different
     std::vector<directory_differences*> m_directory_differences;

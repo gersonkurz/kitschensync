@@ -77,6 +77,25 @@ public:
         return result;
     }
 
+    const WIN32_FIND_DATA* get_const_file(size_t index) const
+    {
+        if (index < m_entries.size())
+        {
+            return &m_entries[index];
+        }
+        return nullptr;
+    }
+
+    const std::unordered_map<std::string, size_t>& get_const_file_indizes() const
+    {
+        return m_files;
+    }
+
+    bool does_file_exist(const std::string& name) const
+    {
+        return m_files.find(name) != m_files.end();
+    }
+
 private:
     // subdirectories (not sorted)
     std::unordered_map<std::string, size_t> m_subdirectories;
