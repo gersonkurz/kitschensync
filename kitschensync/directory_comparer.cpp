@@ -4,8 +4,9 @@
 #include "stdafx.h"
 #include "directory_comparer.h"
 
-directory_differences directory_comparer::compare(const directory_listing& a, const directory_listing& b) const
+directory_differences directory_comparer::compare(const directory_listing& , const directory_listing& ) const
 {
     directory_differences result;
+
     return result;
 }

@@ -36,9 +36,9 @@ public:
         return m_path.c_str();
     } 
 
-    size_t total_files() const
+    long long total_files() const
     {
-        size_t result = m_files.size();
+        long long result = m_files.size();
         
         for (auto var : m_subdirectory_listings)
         {
@@ -47,9 +47,9 @@ public:
         return result;
     }
 
-    size_t total_bytes() const
+    long long total_bytes() const
     {
-        size_t result = 0;
+        long long result = 0;
 
         for (auto var : m_files)
         {
@@ -67,9 +67,9 @@ public:
         return result;
     }
 
-    size_t total_subdirectories() const
+    long long total_subdirectories() const
     {
-        size_t result = m_subdirectories.size();
+        long long result = m_subdirectories.size();
         for (auto var : m_subdirectory_listings)
         {
             result += var->total_subdirectories();

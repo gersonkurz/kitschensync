@@ -21,3 +21,9 @@
 
 #define TARGET_IS_WINDOWS
 #undef FILE_SYSTEM_IS_CASE_SENSITIVE 
+#ifdef _M_AMD64
+#define TARGET_IS_64BIT
+#else
+#undef TARGET_IS_64BIT
+#endif
+

@@ -7,9 +7,8 @@
 int _tmain(int, _TCHAR* [])
 {
     list_directory lister;
-    DWORD T0 = GetTickCount();
-    directory_listing a(lister.read("C:\\MinGW_DISABLED"));
-    directory_listing b(lister.read("T:\\MinGW_DISABLED"));
+    directory_listing a(lister.read("G:\\FIDUCIA"));
+    directory_listing b(lister.read("K:\\FIDUCIA\\fiducia_windows"));
 
     directory_comparer dc;
     directory_differences diffs(dc.compare(a, b));
