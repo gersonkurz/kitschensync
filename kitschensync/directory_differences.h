@@ -1,18 +1,18 @@
 #ifndef kitschensync_directory_differences_h
 #define kitschensync_directory_differences_h
 
-class directory_listing;
+class directory_description;
 
 struct file_reference
 {
-    directory_listing* dl;
+    directory_description* dl;
     int index;
 };
 
 class directory_differences // recursive 
 {
 public:
-    directory_differences(const directory_listing& a, const directory_listing& b)
+    directory_differences(const directory_description& a, const directory_description& b)
         : 
         m_directory_a(a),
         m_directory_b(b)
@@ -37,15 +37,15 @@ public:
     }
 
 
-    const directory_listing& m_directory_a;
-    const directory_listing& m_directory_b;
+    const directory_description& m_directory_a;
+    const directory_description& m_directory_b;
 
     // TODO: introduce a class file_listing that is a wrapper around WIN32_FIND_DATA
     std::vector<const WIN32_FIND_DATA*> m_files_missing_in_a;
     std::vector<const WIN32_FIND_DATA*> m_files_missing_in_b;
 
-    std::vector<const directory_listing*> m_directories_missing_in_a;
-    std::vector<const directory_listing*> m_directories_missing_in_b;
+    std::vector<const directory_description*> m_directories_missing_in_a;
+    std::vector<const directory_description*> m_directories_missing_in_b;
 
     // subdirectories that exist in both a and b, but that are - somewhere - different
     std::vector<directory_differences*> m_directory_differences;

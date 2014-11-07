@@ -4,16 +4,23 @@
 #include "stdafx.h"
 #include "list_directory.h"
 
-directory_listing list_directory::read(LPCTSTR directory)
+directory_description list_directory::read(LPCTSTR directory)
 {
-    directory_listing _result(directory);
 
-    std::deque<directory_listing*> directories;
+    DWORD t0 = GetTickCount();
+    long nItems = 0;
+    const char* original_name = directory;
+
+    
+
+    directory_description _result(directory);
+
+    std::deque<directory_description*> directories;
     directories.push_back(&_result);
 
     while (!directories.empty())
     {
-        directory_listing* current(*directories.begin());
+        directory_description* current(*directories.begin());
         directories.pop_front();
         
         directory = current->path();
@@ -61,8 +68,9 @@ directory_listing list_directory::read(LPCTSTR directory)
                     }
                 }
 
+                ++nItems;
                 lstrcpy(&m_path_buffer[path_length], wfd.cFileName);
-                directory_listing* dl = current->push(&m_path_buffer[0], wfd);
+                directory_description* dl = current->push(&m_path_buffer[0], wfd);
                 if (dl)
                 {
                     directories.push_back(dl);
@@ -73,5 +81,7 @@ directory_listing list_directory::read(LPCTSTR directory)
             FindClose(hFF);
         }
     }
+
+    printf("Time to read %ld items in '%s': %ld ms.\r\n", nItems, original_name, GetTickCount() - t0);
     return _result;
 }

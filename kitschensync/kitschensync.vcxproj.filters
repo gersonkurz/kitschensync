@@ -27,10 +27,13 @@
     <ClInclude Include="directory_differences.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="directory_listing.h">
+    <ClInclude Include="list_directory.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="list_directory.h">
+    <ClInclude Include="file_description.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="directory_description.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -47,10 +50,13 @@
     <ClCompile Include="directory_differences.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="directory_listing.cpp">
+    <ClCompile Include="list_directory.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="list_directory.cpp">
+    <ClCompile Include="file_description.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="directory_description.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

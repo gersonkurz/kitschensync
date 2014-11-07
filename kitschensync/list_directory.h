@@ -1,12 +1,12 @@
 #ifndef kitschensync_list_directory_h
 #define kitschensync_list_directory_h
 
-#include "directory_listing.h"
+#include "directory_description.h"
 
 class list_directory
 {
 public:
-    directory_listing read(LPCTSTR directory);
+    directory_description read(LPCTSTR directory);
 
 private:
     void ensure_path_buffer_size_is_at_least(size_t size_in_bytes)

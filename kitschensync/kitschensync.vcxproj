@@ -148,7 +148,8 @@
   <ItemGroup>
     <ClInclude Include="directory_comparer.h" />
     <ClInclude Include="directory_differences.h" />
-    <ClInclude Include="directory_listing.h" />
+    <ClInclude Include="directory_description.h" />
+    <ClInclude Include="file_description.h" />
     <ClInclude Include="list_directory.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
@@ -156,7 +157,8 @@
   <ItemGroup>
     <ClCompile Include="directory_comparer.cpp" />
     <ClCompile Include="directory_differences.cpp" />
-    <ClCompile Include="directory_listing.cpp" />
+    <ClCompile Include="directory_description.cpp" />
+    <ClCompile Include="file_description.cpp" />
     <ClCompile Include="kitschensync.cpp" />
     <ClCompile Include="list_directory.cpp" />
     <ClCompile Include="stdafx.cpp">

@@ -3,20 +3,20 @@
 
 #include "stdafx.h"
 #include "directory_comparer.h"
-#include "directory_listing.h"
+#include "directory_description.h"
 
-void directory_comparer::find_missing_files(const directory_listing& a, const directory_listing& b, std::vector<const WIN32_FIND_DATA*>& missing) const
+void directory_comparer::find_missing_files(const directory_description& a, const directory_description& b, std::vector<const WIN32_FIND_DATA*>& missing) const
 {
-    for (auto var : a.get_const_file_indizes())
+    /*for (auto var : a.get_const_file_indizes())
     {
         if (!b.does_file_exist(var.first))
         {
             missing.push_back(a.get_const_file(var.second));
         }
-    }
+    }*/
 }
 
-directory_differences directory_comparer::compare(const directory_listing& a, const directory_listing& b) const
+directory_differences directory_comparer::compare(const directory_description& a, const directory_description& b) const
 {
     directory_differences result(a, b);
 
