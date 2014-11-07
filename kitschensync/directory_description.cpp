@@ -34,13 +34,16 @@ directory_description* directory_description::push(const char* path, WIN32_FIND_
         li.HighPart = wfd.nFileSizeHigh;
         li.LowPart = wfd.nFileSizeLow;
 
-        file_description* fd = new file_description(name, li.QuadPart, this);
+        LARGE_INTEGER wt;
+        wt.HighPart = wfd.ftLastWriteTime.dwHighDateTime;
+        wt.LowPart = wfd.ftLastWriteTime.dwLowDateTime;
+
+        file_description* fd = new file_description(name, li.QuadPart, wt.QuadPart, this);
 
         m_files.insert({ name, fd });
         return nullptr;
     }
 }
-
 
 // created the first time it is used, afterwards reused
 const char* directory_description::path() const

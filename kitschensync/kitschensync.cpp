@@ -7,9 +7,9 @@
 int _tmain(int, _TCHAR* [])
 {
     list_directory lister;
-    directory_description a(lister.read("G:\\FIDUCIA"));
-    directory_description b(lister.read("K:\\FIDUCIA\\fiducia_windows"));
-    getchar();
+    directory_description a(lister.read("G:\\FIDUCIA\\trunc\\bin\\Release"));
+    directory_description b(lister.read("K:\\FIDUCIA\\fiducia_windows\\trunc\\bin\\Release"));
+    
     directory_comparer dc;
     directory_differences diffs(dc.compare(a, b));
    

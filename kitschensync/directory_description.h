@@ -75,12 +75,45 @@ public:
         return m_files.find(name) != m_files.end();
     }
 
+    bool does_subdirectory_exist(const std::string& name) const
+    {
+        return m_subdirectories.find(name) != m_subdirectories.end();
+    }
+
     bool is_root() const
     {
         return m_parent != nullptr;
     }
 
+    void find_missing_files(
+        const directory_description& other, 
+        std::vector<const file_description*>& missing) const
+    {
+        for (auto var : m_files)
+        {
+            if (!other.does_file_exist(var.first))
+            {
+                missing.push_back(var.second);
+            }
+        }
+    }
+
+    void find_missing_directories(
+        const directory_description& other,
+        std::vector<const directory_description*>& missing) const
+    {
+        for (auto var : m_subdirectories)
+        {
+            if (!other.does_subdirectory_exist(var.first))
+            {
+                missing.push_back(var.second);
+            }
+        }
+    }
+
 private:
+    friend class directory_comparer;
+
     std::unordered_map<std::string, directory_description*> m_subdirectories;
     std::unordered_map<std::string, file_description*> m_files;
     std::string m_name;
