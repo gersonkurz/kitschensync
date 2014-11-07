@@ -17,11 +17,16 @@ int _tmain(int, _TCHAR* [])
         const directory_description* newer;
         const directory_description* older;
 
-        if (diffs->determine_relationship(&newer, &older))
+        diffs->dump();
+
+        relationship_order ro = diffs->determine_relationship(&newer, &older);
+        if (ro != relationship_order::undefined)
         {
             printf("%s is newer than %s\r\n",
                 newer->get_path(),
                 older->get_path());
+
+            diffs->apply_changes(ro);
         }
         else
         {

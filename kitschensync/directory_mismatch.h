@@ -41,12 +41,19 @@ public:
 
     void dump() const;
 
-    bool determine_relationship(const directory_description** pa, const directory_description** pb) const;
+    relationship_order determine_relationship(const directory_description** pa, const directory_description** pb) const;
     relationship_order determine_relationship_order() const;
+
+    void apply_changes(relationship_order ro) const;
 
 private:
     directory_mismatch(const directory_mismatch& objectSrc);
     directory_mismatch& operator=(const directory_mismatch& objectSrc);
+
+private:
+    void copy_missing_files(const directory_description* b, const directory_description* a, const std::vector<const file_description*>& files_missing) const;
+    void copy_missing_directories(const directory_description*b, const directory_description* a, const std::vector<const directory_description*>& directories_missing) const;
+    void copy_file(const char* source, const char* target) const;
 
 public:
     const directory_description* m_a;

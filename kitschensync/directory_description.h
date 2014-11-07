@@ -31,7 +31,8 @@ public:
 
     directory_description* push(const char* path, WIN32_FIND_DATA& wfd);
 
-    // created the first time it is used, afterwards reused
+    void copy_recursive(const char* target_path) const;
+
     const char* get_path() const;
 
     std::string get_in_path(const char* part) const;

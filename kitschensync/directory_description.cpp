@@ -3,10 +3,26 @@
 
 #include "stdafx.h"
 #include "directory_description.h"
-
+#include "file_system.h"
 
 directory_description::~directory_description()
 {
+}
+
+void directory_description::copy_recursive(const char* target_path) const
+{
+    printf("copy recursive: %s => %s\r\n",
+        get_path(),
+        target_path);
+
+    std::deque<std::string> components;
+    components.push_back(target_path);
+    components.push_back(m_name.c_str());
+
+    std::string new_directory_name(file_system::path::join(components));
+
+    printf("- create directory %s\r\n", new_directory_name.c_str());
+    CreateDirectoryEx(get_path(), new_directory_name.c_str(), nullptr);
 }
 
 directory_description* directory_description::push(const char* path, WIN32_FIND_DATA& wfd)
@@ -47,34 +63,18 @@ directory_description* directory_description::push(const char* path, WIN32_FIND_
 
 std::string directory_description::get_in_path(const char* part) const
 {
-    std::deque<std::string> sections;
+    std::deque<std::string> components;
 
     if (part)
-        sections.push_front(part);
+        components.push_front(part);
 
     const directory_description* dl = this;
     while (dl)
     {
-        sections.push_front(dl->m_name);
+        components.push_front(dl->m_name);
         dl = dl->m_parent;
     }
-
-    std::vector<char> buffer;
-    bool first = true;
-    for (auto var : sections)
-    {
-        if (first)
-            first = false;
-        else
-            buffer.push_back('\\');
-
-        for (const char* c = var.c_str(); *c; ++c)
-        {
-            buffer.push_back(*c);
-        }
-    }
-    buffer.push_back(0);
-    return &buffer[0];
+    return file_system::path::join(components);
 }
 
 // created the first time it is used, afterwards reused
@@ -85,5 +85,4 @@ const char* directory_description::get_path() const
         m_path = get_in_path(nullptr);
     }
     return m_path.c_str();
-
 }
