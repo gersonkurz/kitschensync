@@ -2,6 +2,7 @@
 #include "directory_description.h"
 #include "directory_mismatch.h"
 #include "file_description.h"
+#include "file_system.h"
 
 relationship_order directory_mismatch::determine_relationship(const directory_description** pa, const directory_description** pb) const
 {
@@ -99,86 +100,52 @@ void directory_mismatch::dump() const
     }
 }
 
-void directory_mismatch::copy_file(const char* source, const char* target) const
+
+void directory_mismatch::apply_changes(relationship_order ro, directory_sync_mode dsm) const
 {
-    printf("copy file %s => %s\r\n", source, target);
-    //::CopyFile(source, target, false);
-}
+    assert((relationship_order::b_newer_than_a == ro) || 
+           (relationship_order::a_newer_than_b == ro));
 
-void directory_mismatch::copy_missing_files(
-    const directory_description* source, 
-    const directory_description* target, 
-    const std::vector<const file_description*>& files_missing) const
-{
-    for (auto var : files_missing)
+    assert((directory_sync_mode::only_copy_missing_objects == dsm) ||
+           (directory_sync_mode::copy_missing_objects_and_delete_obsolete_ones == dsm));
+
+    if (relationship_order::b_newer_than_a == ro)
     {
-        copy_file(var->get_path(), target->get_in_path(var->get_name()).c_str());
-    }
-}
-
-void directory_mismatch::copy_missing_directories(
-    const directory_description* source, 
-    const directory_description* target, 
-    const std::vector<const directory_description*>& directories_missing) const
-{
-    for (auto var : directories_missing)
-    {
-        var->copy_recursive(target->get_path());
-    }
-}
-
-void directory_mismatch::apply_changes(relationship_order ro) const
-{
-    switch (ro)
-    {
-    case relationship_order::b_newer_than_a:
-        copy_missing_files(m_b, m_a, m_files_missing_in_a);
-        copy_missing_directories(m_b, m_a, m_directories_missing_in_a);
-        break;
-
-    case relationship_order::a_newer_than_b:
-        copy_missing_files(m_a, m_b, m_files_missing_in_b);
-        copy_missing_directories(m_a, m_b, m_directories_missing_in_b);
-        break;
-    }
-    /*
-
-    if (m_file_mismatches.size())
-    {
-        for (auto& var : m_file_mismatches)
+        copy_missing_objects(m_a, m_files_missing_in_a, m_directories_missing_in_a);
+        if (directory_sync_mode::copy_missing_objects_and_delete_obsolete_ones == dsm)
         {
-            switch (var.reason)
-            {
-            case file_mismatch_reason::a_is_newer_than_b:
-                b_is_newer_than_a = false;
-                break;
-            case file_mismatch_reason::a_is_older_than_b:
-                a_is_newer_than_b = false;
-                break;
-            }
-        }
-
-        for (auto var : m_directory_mismatches)
-        {
-            switch (var->determine_relationship_order())
-            {
-            case relationship_order::a_newer_than_b:
-                b_is_newer_than_a = false;
-                break;
-
-            case relationship_order::b_newer_than_a:
-                a_is_newer_than_b = false;
-                break;
-            }
+            delete_obsolete_objects(m_files_missing_in_b, m_directories_missing_in_b);
         }
     }
-    if (a_is_newer_than_b && !b_is_newer_than_a)
-        return relationship_order::a_newer_than_b;
+    else
+    {
+        copy_missing_objects(m_b, m_files_missing_in_b, m_directories_missing_in_b);
+        if (directory_sync_mode::copy_missing_objects_and_delete_obsolete_ones == dsm)
+        {
+            delete_obsolete_objects(m_files_missing_in_a, m_directories_missing_in_a);
+        }
+    }
 
-    if (b_is_newer_than_a && !a_is_newer_than_b)
-        return relationship_order::b_newer_than_a;
-        */
+    for (auto var : m_file_mismatches)
+    {
+        if (relationship_order::a_newer_than_b == ro)
+        {
+            file_system::copy_file(
+                var.a->get_path(),
+                var.b->get_path());
+        }
+        else
+        {
+            file_system::copy_file(
+                var.b->get_path(),
+                var.a->get_path());
+        }
+    }
 
+    for (auto var : m_directory_mismatches)
+    {
+        var->apply_changes(ro, dsm);
+    }
 }
 
 
@@ -236,11 +203,34 @@ relationship_order directory_mismatch::determine_relationship_order() const
             }
         }
     }
+
+
+    relationship_order result = relationship_order::undefined;
     if (a_is_newer_than_b && !b_is_newer_than_a)
-        return relationship_order::a_newer_than_b;
+        result = relationship_order::a_newer_than_b;
 
-    if (b_is_newer_than_a && !a_is_newer_than_b)
-        return relationship_order::b_newer_than_a;
+    else if (b_is_newer_than_a && !a_is_newer_than_b)
+        result = relationship_order::b_newer_than_a;
 
-    return relationship_order::undefined;
+    printf("determine_relationship_order: %s, %s => %s\r\n",
+        m_a->get_path(),
+        m_b->get_path(),
+        as_string(result).c_str());
+    return result;
+}
+
+std::string as_string(relationship_order ro)
+{
+    switch (ro)
+    {
+    case relationship_order::undefined:
+        return "undefined";
+    case relationship_order::a_newer_than_b:
+        return "a_newer_than_b";
+    case relationship_order::b_newer_than_a:
+        return "b_newer_than_a";
+    default:
+        assert(false);
+        return "invalid";
+    }
 }

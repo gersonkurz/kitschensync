@@ -9,20 +9,37 @@ directory_description::~directory_description()
 {
 }
 
-void directory_description::copy_recursive(const char* target_path) const
+void directory_description::copy_recursive(const std::string& target_path) const
 {
-    printf("copy recursive: %s => %s\r\n",
-        get_path(),
-        target_path);
-
-    std::deque<std::string> components;
-    components.push_back(target_path);
-    components.push_back(m_name.c_str());
-
+    std::vector<std::string> components = { target_path, m_name.c_str() };
     std::string new_directory_name(file_system::path::join(components));
 
-    printf("- create directory %s\r\n", new_directory_name.c_str());
-    CreateDirectoryEx(get_path(), new_directory_name.c_str(), nullptr);
+    file_system::create_directory(new_directory_name);
+    components[0] = new_directory_name;
+    for (auto var : m_files)
+    {
+        components[1] = var.second->get_name();
+        file_system::copy_file(
+            var.second->get_path(),
+            file_system::path::join(components));;
+    }
+    for (auto var : m_subdirectories)
+    {
+        var.second->copy_recursive(new_directory_name);
+    }
+}
+
+void directory_description::delete_recursive() const
+{
+    for (auto var : m_subdirectories)
+    {
+        var.second->delete_recursive();
+    }
+    for (auto var : m_files)
+    {
+        file_system::delete_file(var.second->get_path());
+    }
+    file_system::delete_empty_directory(get_path());
 }
 
 directory_description* directory_description::push(const char* path, WIN32_FIND_DATA& wfd)

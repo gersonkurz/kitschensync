@@ -31,7 +31,8 @@ public:
 
     directory_description* push(const char* path, WIN32_FIND_DATA& wfd);
 
-    void copy_recursive(const char* target_path) const;
+    void copy_recursive(const std::string& target_path) const;
+    void delete_recursive() const;
 
     const char* get_path() const;
 

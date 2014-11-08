@@ -1,7 +1,9 @@
 #ifndef kitschensync_directory_differences_h
 #define kitschensync_directory_differences_h
 
-class directory_description;
+#include "directory_description.h"
+#include "file_system.h"
+
 class file_description;
 
 enum class file_mismatch_reason
@@ -27,6 +29,14 @@ enum class relationship_order
     b_newer_than_a
 };
 
+enum class directory_sync_mode
+{
+    only_copy_missing_objects,
+    copy_missing_objects_and_delete_obsolete_ones
+};
+
+std::string as_string(relationship_order ro);
+
 
 
 class directory_mismatch // recursive 
@@ -44,16 +54,46 @@ public:
     relationship_order determine_relationship(const directory_description** pa, const directory_description** pb) const;
     relationship_order determine_relationship_order() const;
 
-    void apply_changes(relationship_order ro) const;
+    void apply_changes(relationship_order ro, directory_sync_mode dsm) const;
 
 private:
     directory_mismatch(const directory_mismatch& objectSrc);
     directory_mismatch& operator=(const directory_mismatch& objectSrc);
 
 private:
-    void copy_missing_files(const directory_description* b, const directory_description* a, const std::vector<const file_description*>& files_missing) const;
-    void copy_missing_directories(const directory_description*b, const directory_description* a, const std::vector<const directory_description*>& directories_missing) const;
-    void copy_file(const char* source, const char* target) const;
+
+    void copy_missing_objects(
+        const directory_description* target,
+        const std::vector<const file_description*>& files_missing,
+        const std::vector<const directory_description*>& directories_missing) const
+    {
+        for (auto var : files_missing)
+        {
+            file_system::copy_file(
+                var->get_path(),
+                target->get_in_path(var->get_name()).c_str());
+        }
+
+        for (auto var : directories_missing)
+        {
+            var->copy_recursive(target->get_path());
+        }
+    }
+
+    void delete_obsolete_objects(
+        const std::vector<const file_description*>& obsolete_files,
+        const std::vector<const directory_description*>& obsolete_directories) const
+    {
+        for (auto var : obsolete_files)
+        {
+            file_system::delete_file(var->get_path());
+        }
+
+        for (auto var : obsolete_directories)
+        {
+            var->delete_recursive();
+        }
+    }
 
 public:
     const directory_description* m_a;
