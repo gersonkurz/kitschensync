@@ -4,9 +4,16 @@
 #include "stdafx.h"
 #include "directory_description.h"
 #include "file_system.h"
+#include "utilities.h"
 
 directory_description::~directory_description()
 {
+    utilities::clean_map(m_subdirectories);
+    utilities::clean_map(m_files);
+
+#ifdef _DEBUG
+    m_parent = nullptr;
+#endif
 }
 
 void directory_description::copy_recursive(const std::string& target_path) const

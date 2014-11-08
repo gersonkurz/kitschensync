@@ -11,8 +11,6 @@ directory_description* list_directory::read(LPCTSTR directory)
     long nItems = 0;
     const char* original_name = directory;
 
-    
-
     directory_description* result = new directory_description(directory);
 
     std::deque<directory_description*> directories;

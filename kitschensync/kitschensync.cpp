@@ -4,12 +4,12 @@
 #include "list_directory.h"
 #include "directory_mismatch.h"
 
-int _tmain(int, _TCHAR* [])
+void test()
 {
     list_directory lister;
     directory_description* a(lister.read("C:\\Projects\\kitschensync - Kopie"));
     directory_description* b(lister.read("T:\\kitschensync"));
-    
+
     directory_comparer dc;
     directory_mismatch* diffs = dc.compare_directories(a, b);
     if (diffs)
@@ -42,8 +42,17 @@ int _tmain(int, _TCHAR* [])
     {
         printf("Great: directories are identical!\r\n");
     }
-    printf("Press any key to close this window");
-    getchar();
+    delete diffs;
+    delete a;
+    delete b;
+}
+
+int _tmain(int, _TCHAR* [])
+{
+    test();
+#ifdef _DEBUG
+    _CrtDumpMemoryLeaks();
+#endif
     return 0;
 }
 
