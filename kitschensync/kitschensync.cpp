@@ -3,14 +3,73 @@
 #include "directory_comparer.h"
 #include "list_directory.h"
 #include "directory_mismatch.h"
+#include "utilities.h"
 
-void test()
+// todo: make interface for this
+bool affirmative_input(const char* fmt, ...)
 {
+    va_list args;
+    va_start(args, fmt);
+
+    std::string formatted(utilities::string::vformat(fmt, args));
+    puts(formatted.c_str());
+
+    char input[200];
+    if (fgets(input, sizeof(input), stdin))
+    {
+        if (input[0] == 'y' ||
+            input[0] == 'Y')
+        {
+            return true;
+        }
+    }
+    return false;
+}
+
+bool synchronize_directories(const std::string& name_a, const std::string& name_b)
+{
+    relationship_order ro = relationship_order::undefined;
+
+    if (!file_system::does_directory_exist(name_a))
+    {
+        if (!file_system::does_directory_exist(name_b))
+        {
+            printf("ERROR, neither '%s' nor '%s' exist, aborting\r\n",
+                name_a.c_str(),
+                name_b.c_str());
+            return false;
+        }
+
+        if (affirmative_input("%s does not exist => do you want to clone %s (Y/n)?",
+            name_a.c_str(),
+            name_b.c_str()))
+        {
+            ro = relationship_order::b_newer_than_a;
+            if (!file_system::create_directory(name_a.c_str()))
+            {
+                return false;
+            }
+        }
+        else return false;
+    }
+    else if (!file_system::does_directory_exist(name_b))
+    {
+        if (affirmative_input("%s does not exist => do you want to clone %s (Y/n)?",
+            name_a.c_str(),
+            name_b.c_str()))
+        {
+            ro = relationship_order::a_newer_than_b;
+            if (!file_system::create_directory(name_b.c_str()))
+            {
+                return false;
+            }
+        }
+        else return false;
+    }
+
     list_directory lister;
-    directory_description* a(lister.read("C:\\Projects\\kitschensync - Kopie"));
-    directory_description* b(lister.read("T:\\kitschensync"));
-
-
+    directory_description* a(lister.read(name_a.c_str()));
+    directory_description* b(lister.read(name_b.c_str()));
 
     directory_comparer dc;
     directory_mismatch* diffs = dc.compare_directories(a, b);
@@ -18,8 +77,6 @@ void test()
     {
         const directory_description* newer;
         const directory_description* older;
-
-        diffs->dump();
 
         relationship_order ro = diffs->determine_relationship(&newer, &older);
         if (ro != relationship_order::undefined)
@@ -29,9 +86,9 @@ void test()
                 newer->get_path(),
                 older->get_path());
             printf("--------------------------------------------\r\n");
-            DWORD t0 = GetTickCount();
-            diffs->apply_changes(ro, directory_sync_mode::copy_missing_objects_and_delete_obsolete_ones);
-            printf("Time to sync directories: %ld ms.\r\n", GetTickCount() - t0);
+            //DWORD t0 = GetTickCount();
+            //diffs->apply_changes(ro, directory_sync_mode::copy_missing_objects_and_delete_obsolete_ones);
+            //printf("Time to sync directories: %ld ms.\r\n", GetTickCount() - t0);
         }
         else
         {
@@ -47,11 +104,14 @@ void test()
     }
     delete a;
     delete b;
+    return true;
 }
 
 int _tmain(int, _TCHAR* [])
 {
-    test();
+    synchronize_directories(
+        "C:\\Projects\\kitschensync - Kopie", 
+        "T:\\kitschensync");
 #ifdef _DEBUG
     _CrtDumpMemoryLeaks();
 #endif
