@@ -17,11 +17,8 @@ bool affirmative_input(const char* fmt, ...)
     char input[200];
     if (fgets(input, sizeof(input), stdin))
     {
-        if (input[0] == 'y' ||
-            input[0] == 'Y')
-        {
-            return true;
-        }
+        return (input[0] != 'N') &&
+               (input[0] != 'n');
     }
     return false;
 }
@@ -78,17 +75,27 @@ bool synchronize_directories(const std::string& name_a, const std::string& name_
         const directory_description* newer;
         const directory_description* older;
 
-        relationship_order ro = diffs->determine_relationship(&newer, &older);
-        if (ro != relationship_order::undefined)
+        if (ro == relationship_order::undefined)
         {
-            printf("--------------------------------------------\r\n");
-            printf("%s is newer than %s\r\n",
-                newer->get_path(),
-                older->get_path());
-            printf("--------------------------------------------\r\n");
-            //DWORD t0 = GetTickCount();
-            //diffs->apply_changes(ro, directory_sync_mode::copy_missing_objects_and_delete_obsolete_ones);
-            //printf("Time to sync directories: %ld ms.\r\n", GetTickCount() - t0);
+            ro = diffs->determine_relationship(&newer, &older);
+        }
+        if (ro == relationship_order::a_newer_than_b)
+        {
+            if (affirmative_input("%s is newer than %s. Are you sure to proceed? [Y/n]",
+                name_a.c_str(),
+                name_b.c_str()))
+            {
+                diffs->apply_changes(ro, directory_sync_mode::copy_missing_objects_and_delete_obsolete_ones);
+            }
+        }
+        else if (ro == relationship_order::b_newer_than_a)
+        {
+            if (affirmative_input("%s is newer than %s. Are you sure to proceed? [Y/n]",
+                name_b.c_str(),
+                name_a.c_str()))
+            {
+                diffs->apply_changes(ro, directory_sync_mode::copy_missing_objects_and_delete_obsolete_ones);
+            }
         }
         else
         {

@@ -33,6 +33,8 @@ namespace file_system
     bool delete_empty_directory(const std::string& source);
     bool create_directory(const std::string& path);
     bool does_directory_exist(const std::string& path);
+    
+
 }
 
 #endif // kitschensync_file_system_h

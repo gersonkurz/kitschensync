@@ -8,8 +8,8 @@
 
 directory_description::~directory_description()
 {
-    utilities::clean_map(m_subdirectories);
-    utilities::clean_map(m_files);
+    utilities::clean(m_subdirectories);
+    utilities::clean(m_files);
 
 #ifdef _DEBUG
     m_parent = nullptr;

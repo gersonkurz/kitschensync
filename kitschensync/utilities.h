@@ -3,7 +3,7 @@
 
 namespace utilities
 {
-    template <typename KEY, typename VALUE> void clean_map(std::unordered_map<KEY, VALUE>& items)
+    template <typename KEY, typename VALUE> void clean(std::unordered_map<KEY, VALUE*>& items)
     {
         for (auto var : items)
         {
@@ -12,6 +12,14 @@ namespace utilities
         items.clear();
     }
 
+    template <typename ITEM> void clean(std::vector<ITEM*>& items)
+    {
+        for (auto var : items)
+        {
+            delete var;
+        }
+        items.clear();
+    }
 
     namespace string
     {
