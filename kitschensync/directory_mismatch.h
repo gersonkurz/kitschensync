@@ -63,10 +63,10 @@ private:
 
 private:
 
-    void copy_missing_objects(
+    static void copy_missing_objects(
         const directory_description* target,
         const std::vector<const file_description*>& files_missing,
-        const std::vector<const directory_description*>& directories_missing) const
+        const std::vector<const directory_description*>& directories_missing) 
     {
         for (auto var : files_missing)
         {
@@ -81,9 +81,9 @@ private:
         }
     }
 
-    void delete_obsolete_objects(
+    static void delete_obsolete_objects(
         const std::vector<const file_description*>& obsolete_files,
-        const std::vector<const directory_description*>& obsolete_directories) const
+        const std::vector<const directory_description*>& obsolete_directories) 
     {
         for (auto var : obsolete_files)
         {
@@ -107,8 +107,6 @@ public:
     std::vector<const directory_description*> m_directories_missing_in_a;
     std::vector<const directory_description*> m_directories_missing_in_b;
 
-    // subdirectories that exist in both a and b, but that are - somewhere - different
-    // now this is where we're going to: differences in directories
     std::vector<const directory_mismatch*> m_directory_mismatches;
 };
 

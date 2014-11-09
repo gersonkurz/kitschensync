@@ -18,21 +18,33 @@ directory_description::~directory_description()
 
 void directory_description::copy_recursive(const std::string& target_path) const
 {
-    std::vector<std::string> components = { target_path, m_name.c_str() };
-    std::string new_directory_name(file_system::path::join(components));
+    typedef std::pair<std::string, const directory_description*> lookup;
 
-    file_system::create_directory(new_directory_name);
-    components[0] = new_directory_name;
-    for (auto var : m_files)
+    std::deque<lookup> pairs;
+    pairs.push_back({ target_path, this });
+    
+    while (!pairs.empty())
     {
-        components[1] = var.second->get_name();
-        file_system::copy_file(
-            var.second->get_path(),
-            file_system::path::join(components));;
-    }
-    for (auto var : m_subdirectories)
-    {
-        var.second->copy_recursive(new_directory_name);
+        lookup that(*pairs.begin());
+        pairs.pop_front();
+        assert(that.second != nullptr);
+
+        std::vector<std::string> components = { that.first, that.second->m_name.c_str() };
+        std::string new_directory_name(file_system::path::join(components));
+
+        file_system::create_directory(new_directory_name);
+        components[0] = new_directory_name;
+        for (auto var : that.second->m_files)
+        {
+            components[1] = var.second->get_name();
+            file_system::copy_file(
+                var.second->get_path(),
+                file_system::path::join(components));;
+        }
+        for (auto var : that.second->m_subdirectories)
+        {
+            pairs.push_back({ new_directory_name, var.second });
+        }
     }
 }
 

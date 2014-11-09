@@ -116,42 +116,51 @@ void directory_mismatch::apply_changes(relationship_order ro, directory_sync_mod
     assert((directory_sync_mode::only_copy_missing_objects == dsm) ||
            (directory_sync_mode::copy_missing_objects_and_delete_obsolete_ones == dsm));
 
-    if (relationship_order::b_newer_than_a == ro)
+    std::deque<const directory_mismatch*> items;
+    items.push_back(this);
+    while (!items.empty())
     {
-        copy_missing_objects(m_a, m_files_missing_in_a, m_directories_missing_in_a);
-        if (directory_sync_mode::copy_missing_objects_and_delete_obsolete_ones == dsm)
-        {
-            delete_obsolete_objects(m_files_missing_in_b, m_directories_missing_in_b);
-        }
-    }
-    else
-    {
-        copy_missing_objects(m_b, m_files_missing_in_b, m_directories_missing_in_b);
-        if (directory_sync_mode::copy_missing_objects_and_delete_obsolete_ones == dsm)
-        {
-            delete_obsolete_objects(m_files_missing_in_a, m_directories_missing_in_a);
-        }
-    }
+        const directory_mismatch* that(*items.begin());
+        items.pop_front();
+        assert(that != nullptr);
 
-    for (auto var : m_file_mismatches)
-    {
-        if (relationship_order::a_newer_than_b == ro)
+        if (relationship_order::b_newer_than_a == ro)
         {
-            file_system::copy_file(
-                var.a->get_path(),
-                var.b->get_path());
+            copy_missing_objects(that->m_a, that->m_files_missing_in_a, that->m_directories_missing_in_a);
+            if (directory_sync_mode::copy_missing_objects_and_delete_obsolete_ones == dsm)
+            {
+                delete_obsolete_objects(that->m_files_missing_in_b, that->m_directories_missing_in_b);
+            }
         }
         else
         {
-            file_system::copy_file(
-                var.b->get_path(),
-                var.a->get_path());
+            copy_missing_objects(that->m_b, that->m_files_missing_in_b, that->m_directories_missing_in_b);
+            if (directory_sync_mode::copy_missing_objects_and_delete_obsolete_ones == dsm)
+            {
+                delete_obsolete_objects(that->m_files_missing_in_a, that->m_directories_missing_in_a);
+            }
         }
-    }
 
-    for (auto var : m_directory_mismatches)
-    {
-        var->apply_changes(ro, dsm);
+        for (auto var : that->m_file_mismatches)
+        {
+            if (relationship_order::a_newer_than_b == ro)
+            {
+                file_system::copy_file(
+                    var.a->get_path(),
+                    var.b->get_path());
+            }
+            else
+            {
+                file_system::copy_file(
+                    var.b->get_path(),
+                    var.a->get_path());
+            }
+        }
+
+        for (auto var : that->m_directory_mismatches)
+        {
+            items.push_back(var);
+        }
     }
 }
 

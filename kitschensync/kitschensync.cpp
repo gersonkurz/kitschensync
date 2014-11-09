@@ -74,14 +74,16 @@ bool synchronize_directories(const std::string& name_a, const std::string& name_
     {
         const directory_description* newer;
         const directory_description* older;
+        bool previously_known = true;
 
         if (ro == relationship_order::undefined)
         {
             ro = diffs->determine_relationship(&newer, &older);
+            previously_known = false;
         }
         if (ro == relationship_order::a_newer_than_b)
         {
-            if (affirmative_input("%s is newer than %s. Are you sure to proceed? [Y/n]",
+            if (previously_known || affirmative_input("%s is newer than %s. Are you sure to proceed? [Y/n]",
                 name_a.c_str(),
                 name_b.c_str()))
             {
@@ -90,7 +92,7 @@ bool synchronize_directories(const std::string& name_a, const std::string& name_
         }
         else if (ro == relationship_order::b_newer_than_a)
         {
-            if (affirmative_input("%s is newer than %s. Are you sure to proceed? [Y/n]",
+            if (previously_known || affirmative_input("%s is newer than %s. Are you sure to proceed? [Y/n]",
                 name_b.c_str(),
                 name_a.c_str()))
             {
@@ -107,7 +109,7 @@ bool synchronize_directories(const std::string& name_a, const std::string& name_
     }
     else
     {
-        printf("Great: directories are identical!\r\n");
+        printf("OK: both directories are already in sync.\r\n");
     }
     delete a;
     delete b;
@@ -117,11 +119,12 @@ bool synchronize_directories(const std::string& name_a, const std::string& name_
 int _tmain(int, _TCHAR* [])
 {
     synchronize_directories(
-        "C:\\Projects\\kitschensync - Kopie", 
-        "T:\\kitschensync");
+        "K:\\GIT\\PROAKT", 
+        "H:\\WNBT\\PROAKTIV");
 #ifdef _DEBUG
     _CrtDumpMemoryLeaks();
 #endif
+    printf("press ANY key to close this app()");
     getchar();
     return 0;
 }
