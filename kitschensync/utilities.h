@@ -11,6 +11,13 @@ namespace utilities
         }
         items.clear();
     }
+
+
+    namespace string
+    {
+        std::string vformat(const char* fmt, va_list args);
+    }
+
 }
 
 #endif // kitschensync_utilities_h
