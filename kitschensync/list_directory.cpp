@@ -3,15 +3,17 @@
 
 #include "stdafx.h"
 #include "list_directory.h"
-
+#include "file_system.h"
 directory_description* list_directory::read(LPCTSTR directory)
 {
+    if (!file_system::does_directory_exist(directory))
+    {
+        // TODO: should log this
+        return nullptr;
+    }
+        
 
-    DWORD t0 = GetTickCount();
-    long nItems = 0;
-    const char* original_name = directory;
-
-    directory_description* result = new directory_description(directory);
+    directory_description* result = new directory_description(directory); 
 
     std::deque<directory_description*> directories;
     directories.push_back(result);
@@ -66,7 +68,6 @@ directory_description* list_directory::read(LPCTSTR directory)
                     }
                 }
 
-                ++nItems;
                 lstrcpy(&m_path_buffer[path_length], wfd.cFileName);
                 directory_description* dl = current->push(&m_path_buffer[0], wfd);
                 if (dl)
@@ -79,7 +80,5 @@ directory_description* list_directory::read(LPCTSTR directory)
             FindClose(hFF);
         }
     }
-
-    printf("Time to read %ld items in '%s': %ld ms.\r\n", nItems, original_name, GetTickCount() - t0);
     return result;
 }
