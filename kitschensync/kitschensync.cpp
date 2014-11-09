@@ -10,6 +10,8 @@ void test()
     directory_description* a(lister.read("C:\\Projects\\kitschensync - Kopie"));
     directory_description* b(lister.read("T:\\kitschensync"));
 
+
+
     directory_comparer dc;
     directory_mismatch* diffs = dc.compare_directories(a, b);
     if (diffs)
@@ -37,12 +39,12 @@ void test()
             diffs->dump();
         }
         delete diffs;
+        diffs = nullptr;
     }
     else
     {
         printf("Great: directories are identical!\r\n");
     }
-    delete diffs;
     delete a;
     delete b;
 }
@@ -53,6 +55,7 @@ int _tmain(int, _TCHAR* [])
 #ifdef _DEBUG
     _CrtDumpMemoryLeaks();
 #endif
+    getchar();
     return 0;
 }
 
