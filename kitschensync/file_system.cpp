@@ -6,6 +6,15 @@
 
 namespace file_system
 {
+    bool does_directory_exist(const std::string& path)
+    {
+        // taken from http://stackoverflow.com/questions/6218325/how-do-you-check-if-a-directory-exists-on-windows-in-c
+        DWORD dwAttrib = ::GetFileAttributes(path.c_str());
+
+        return (dwAttrib != INVALID_FILE_ATTRIBUTES)
+            && (dwAttrib & FILE_ATTRIBUTE_DIRECTORY);
+    }
+
     bool copy_file(const std::string& source, const std::string& target)
     {
         if (!::CopyFile(source.c_str(), target.c_str(), false))
