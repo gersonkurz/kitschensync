@@ -48,6 +48,7 @@ public:
         m_b(b)
     {
     }
+    virtual ~directory_mismatch();
 
     void dump() const;
 

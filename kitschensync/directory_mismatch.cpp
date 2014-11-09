@@ -3,6 +3,7 @@
 #include "directory_mismatch.h"
 #include "file_description.h"
 #include "file_system.h"
+#include "utilities.h"
 
 relationship_order directory_mismatch::determine_relationship(const directory_description** pa, const directory_description** pb) const
 {
@@ -21,6 +22,12 @@ relationship_order directory_mismatch::determine_relationship(const directory_de
     }
     return result;
 }
+
+directory_mismatch::~directory_mismatch()
+{
+    utilities::clean(m_directory_mismatches);
+}
+
 void directory_mismatch::dump() const
 {
     if (m_files_missing_in_a.size())
@@ -212,10 +219,6 @@ relationship_order directory_mismatch::determine_relationship_order() const
     else if (b_is_newer_than_a && !a_is_newer_than_b)
         result = relationship_order::b_newer_than_a;
 
-    printf("determine_relationship_order: %s, %s => %s\r\n",
-        m_a->get_path(),
-        m_b->get_path(),
-        as_string(result).c_str());
     return result;
 }
 
