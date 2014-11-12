@@ -11,13 +11,13 @@ relationship_order directory_mismatch::determine_relationship(const directory_de
     switch (result)
     {
     case relationship_order::a_newer_than_b:
-        *pa = m_a;
-        *pb = m_b;
+        *pa = m_d[0];
+        *pb = m_d[1];
         break;
 
     case relationship_order::b_newer_than_a:
-        *pa = m_b;
-        *pb = m_a;
+        *pa = m_d[1];
+        *pb = m_d[0];
         break;
     }
     return result;
@@ -30,40 +30,40 @@ directory_mismatch::~directory_mismatch()
 
 void directory_mismatch::dump() const
 {
-    if (m_files_missing_in_a.size())
+    if (m_files_missing[0].size())
     {
-        printf("%d files are missing in '%s' (A):\r\n", m_files_missing_in_a.size(), m_a->get_path());
-        for (auto var : m_files_missing_in_a)
+        printf("%d files are missing in '%s':\r\n", m_files_missing[0].size(), m_d[0]->get_path());
+        for (auto var : m_files_missing[0])
         {
             printf("- '%s'\r\n", var->get_path());
         }
         printf("\r\n");
     }
 
-    if (m_files_missing_in_b.size())
+    if (m_files_missing[1].size())
     {
-        printf("%d files are missing in '%s' (B):\r\n", m_files_missing_in_b.size(), m_b->get_path());
-        for (auto var : m_files_missing_in_b)
+        printf("%d files are missing in '%s':\r\n", m_files_missing[1].size(), m_d[1]->get_path());
+        for (auto var : m_files_missing[1])
         {
             printf("- '%s'\r\n", var->get_path());
         }
         printf("\r\n");
     }
 
-    if (m_directories_missing_in_a.size())
+    if (m_directories_missing[0].size())
     {
-        printf("%d directories are missing in '%s' (A):\r\n", m_directories_missing_in_a.size(), m_a->get_path());
-        for (auto var : m_directories_missing_in_a)
+        printf("%d directories are missing in '%s':\r\n", m_directories_missing[0].size(), m_d[0]->get_path());
+        for (auto var : m_directories_missing[0])
         {
             printf("- '%s'\r\n", var->get_path());
         }
         printf("\r\n");
     }
     
-    if (m_directories_missing_in_b.size())
+    if (m_directories_missing[1].size())
     {
-        printf("%d directories are missing in '%s' (B):\r\n", m_directories_missing_in_b.size(), m_b->get_path());
-        for (auto var : m_directories_missing_in_b)
+        printf("%d directories are missing in '%s':\r\n", m_directories_missing[1].size(), m_d[1]->get_path());
+        for (auto var : m_directories_missing[1])
         {
             printf("- '%s'\r\n", var->get_path());
         }
@@ -126,18 +126,18 @@ void directory_mismatch::apply_changes(relationship_order ro, directory_sync_mod
 
         if (relationship_order::b_newer_than_a == ro)
         {
-            copy_missing_objects(that->m_a, that->m_files_missing_in_a, that->m_directories_missing_in_a);
+            copy_missing_objects(that->m_d[0], that->m_files_missing[0], that->m_directories_missing[0]);
             if (directory_sync_mode::copy_missing_objects_and_delete_obsolete_ones == dsm)
             {
-                delete_obsolete_objects(that->m_files_missing_in_b, that->m_directories_missing_in_b);
+                delete_obsolete_objects(that->m_files_missing[1], that->m_directories_missing[1]);
             }
         }
         else
         {
-            copy_missing_objects(that->m_b, that->m_files_missing_in_b, that->m_directories_missing_in_b);
+            copy_missing_objects(that->m_d[1], that->m_files_missing[1], that->m_directories_missing[1]);
             if (directory_sync_mode::copy_missing_objects_and_delete_obsolete_ones == dsm)
             {
-                delete_obsolete_objects(that->m_files_missing_in_a, that->m_directories_missing_in_a);
+                delete_obsolete_objects(that->m_files_missing[0], that->m_directories_missing[0]);
             }
         }
 
@@ -170,22 +170,22 @@ relationship_order directory_mismatch::determine_relationship_order() const
     bool a_is_newer_than_b = true;
     bool b_is_newer_than_a = true;
 
-    if (m_files_missing_in_a.size())
+    if (m_files_missing[0].size())
     {
         a_is_newer_than_b = false;
     }
 
-    if (m_files_missing_in_b.size())
+    if (m_files_missing[1].size())
     {
         b_is_newer_than_a = false;
     }
 
-    if (m_directories_missing_in_a.size())
+    if (m_directories_missing[0].size())
     {
         a_is_newer_than_b = false;
     }
 
-    if (m_directories_missing_in_b.size())
+    if (m_directories_missing[1].size())
     {
         b_is_newer_than_a = false;
     }

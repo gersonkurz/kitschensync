@@ -33,7 +33,7 @@ directory_mismatch* directory_comparer::compare_directories(const directory_desc
         {
             if (result == nullptr)
                 result = new directory_mismatch(a, b);
-            result->m_files_missing_in_b.push_back(var_a.second);
+            result->m_files_missing[1].push_back(var_a.second);
         }
         else
         {
@@ -52,7 +52,7 @@ directory_mismatch* directory_comparer::compare_directories(const directory_desc
         {
             if (result == nullptr)
                 result = new directory_mismatch(a, b);
-            result->m_files_missing_in_a.push_back(var_b.second);
+            result->m_files_missing[0].push_back(var_b.second);
         }
     }
 
@@ -63,7 +63,7 @@ directory_mismatch* directory_comparer::compare_directories(const directory_desc
         {
             if (result == nullptr)
                 result = new directory_mismatch(a, b);
-            result->m_directories_missing_in_b.push_back(var_a.second);
+            result->m_directories_missing[1].push_back(var_a.second);
         }
         else
         {
@@ -83,7 +83,7 @@ directory_mismatch* directory_comparer::compare_directories(const directory_desc
         {
             if (result == nullptr)
                 result = new directory_mismatch(a, b);
-            result->m_directories_missing_in_a.push_back(var_b.second);
+            result->m_directories_missing[0].push_back(var_b.second);
         }
     }
 

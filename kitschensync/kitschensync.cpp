@@ -81,6 +81,7 @@ bool synchronize_directories(const std::string& name_a, const std::string& name_
             ro = diffs->determine_relationship(&newer, &older);
             previously_known = false;
         }
+        ro = relationship_order::b_newer_than_a;
         if (ro == relationship_order::a_newer_than_b)
         {
             if (previously_known || affirmative_input("%s is newer than %s. Are you sure to proceed? [Y/n]",

@@ -38,15 +38,13 @@ enum class directory_sync_mode
 std::string as_string(relationship_order ro);
 
 
-
 class directory_mismatch // recursive 
 {
 public:
     directory_mismatch(const directory_description* a, const directory_description* b)
-        : 
-        m_a(a),
-        m_b(b)
     {
+        m_d[0] = a;
+        m_d[1] = b;
     }
     virtual ~directory_mismatch();
 
@@ -96,17 +94,14 @@ private:
         }
     }
 
-public:
-    const directory_description* m_a;
-    const directory_description* m_b;
+private:
+    friend class directory_comparer;
 
-    std::vector<const file_description*> m_files_missing_in_a;
-    std::vector<const file_description*> m_files_missing_in_b;
+    const directory_description* m_d[2];
+    std::vector<const file_description*> m_files_missing[2];
+    std::vector<const directory_description*> m_directories_missing[2];
+
     std::vector<file_mismatch> m_file_mismatches;
-
-    std::vector<const directory_description*> m_directories_missing_in_a;
-    std::vector<const directory_description*> m_directories_missing_in_b;
-
     std::vector<const directory_mismatch*> m_directory_mismatches;
 };
 
