@@ -20,12 +20,20 @@ namespace utilities
         }
         items.clear();
     }
+}
 
-    namespace string
+
+namespace string
+{
+    std::string vformat(const char* fmt, va_list args);
+    inline std::string format(const char* fmt, ...)
     {
-        std::string vformat(const char* fmt, va_list args);
+        va_list args;
+        va_start(args, fmt);
+        return vformat(fmt, args);
     }
-
+    std::string lowercase(const std::string& input);
+    std::string UPPERCASE(const std::string& input);
 }
 
 #endif // kitschensync_utilities_h

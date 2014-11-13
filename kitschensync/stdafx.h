@@ -23,6 +23,7 @@
 #include <unordered_set>
 #include <assert.h>
 #include <deque>
+#include <fstream>
 
 #define TARGET_IS_WINDOWS
 #undef FILE_SYSTEM_IS_CASE_SENSITIVE 
