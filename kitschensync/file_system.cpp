@@ -19,7 +19,8 @@ namespace file_system
     {
         if (!::CopyFile(source.c_str(), target.c_str(), false))
         {
-            printf("ERROR: unable to copy %s => %s\r\n",
+            printf("ERROR %ld: unable to copy %s => %s\r\n",
+                GetLastError(),
                 source.c_str(),
                 target.c_str());
             return false;
