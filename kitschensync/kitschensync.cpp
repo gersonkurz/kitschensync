@@ -14,9 +14,9 @@ int _tmain(int argc, _TCHAR* argv[])
     }
 #ifdef _DEBUG
     _CrtDumpMemoryLeaks();
-    printf("press ANY key to close this app()");
-    getchar();
 #endif
+    printf("Press return to close this program.");
+    getchar();
     return rc;
 }
 

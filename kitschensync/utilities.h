@@ -85,6 +85,17 @@ namespace string
     {
         return name.empty();
     }
+
+    inline bool endswith(const char* a, const char* b)
+    {
+        size_t n_a = strlen(a);
+        size_t n_b = strlen(b);
+        if (n_a < n_b)
+            return false;
+
+        a += n_a - n_b;
+        return equals(a, b);
+    }
 }
 
 #endif // kitschensync_utilities_h

@@ -220,6 +220,10 @@ bool console_app::handle_input_args(int argc, char* argv[])
                     return false;
                 }
             }
+            else if (string::endswith(arg, ".kitschensync"))
+            {
+                m_config_filename = arg;
+            }
             else
             {
                 printf("ERROR, expected argument, got '%s' instead\r\n", arg);

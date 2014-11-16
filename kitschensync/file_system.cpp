@@ -40,6 +40,17 @@ namespace file_system
     {
         if (!::CopyFile(source.c_str(), target.c_str(), false))
         {
+            DWORD dwLastError = GetLastError();
+
+            if (dwLastError == ERROR_ACCESS_DENIED)
+            {
+                ::SetFileAttributes(target.c_str(), GetFileAttributes(target.c_str()) & ~FILE_ATTRIBUTE_READONLY);
+                if (::CopyFile(source.c_str(), target.c_str(), false))
+                    return true;
+
+                dwLastError = GetLastError();
+            }
+
             printf("ERROR %ld: unable to copy %s => %s\r\n",
                 GetLastError(),
                 source.c_str(),
