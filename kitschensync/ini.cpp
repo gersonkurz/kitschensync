@@ -4,6 +4,7 @@
 #include "stdafx.h"
 #include "utilities.h"
 #include "ini.h"
+#include "file_system.h"
 
 namespace ini
 {
@@ -192,7 +193,7 @@ namespace ini
         m_value.clear();
         m_start_of_recording = -1;
         m_done = false;
-        printf("LINE %ld: '%s'\r\n", m_line, line);
+        //printf("LINE %ld: '%s'\r\n", m_line, line);
         for (m_column = 0; !m_done; ++m_column)
         {
             if (!(this->*m_current_parser_state)(line[m_column]))
@@ -211,6 +212,9 @@ namespace ini
 
     section* file_reader::read(const std::string& filename)
     {
+        if (!file_system::does_file_exist(filename))
+            return nullptr;
+
         auto result = new section("");
         m_current_section = result;
         m_filename = filename;

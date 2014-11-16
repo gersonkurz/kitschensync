@@ -34,6 +34,57 @@ namespace string
     }
     std::string lowercase(const std::string& input);
     std::string UPPERCASE(const std::string& input);
+
+    inline bool equals(const char* a, const char* b)
+    {
+        return strcmp(a, b) == 0;
+    }
+
+    inline bool equals(const std::string& a, const char* b)
+    {
+        return strcmp(a.c_str(), b) == 0;
+    }
+
+    inline bool equals(const char* a, const std::string& b)
+    {
+        return strcmp(a, b.c_str()) == 0;
+    }
+
+    inline bool equals(const std::string& a, const std::string& b)
+    {
+        return strcmp(a.c_str(), b.c_str()) == 0;
+    }
+
+
+    inline bool equalsI(const char* a, const char* b)
+    {
+        return _strcmpi(a, b) == 0;
+    }
+
+    inline bool equalsI(const std::string& a, const char* b)
+    {
+        return _strcmpi(a.c_str(), b) == 0;
+    }
+
+    inline bool equalsI(const char* a, const std::string& b)
+    {
+        return _strcmpi(a, b.c_str()) == 0;
+    }
+
+    inline bool equalsI(const std::string& a, const std::string& b)
+    {
+        return _strcmpi(a.c_str(), b.c_str()) == 0;
+    }
+
+    inline bool is_empty(const char* name)
+    {
+        return !name || !*name;
+    }
+
+    inline bool is_empty(const std::string& name)
+    {
+        return name.empty();
+    }
 }
 
 #endif // kitschensync_utilities_h

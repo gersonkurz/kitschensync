@@ -28,11 +28,14 @@ namespace file_system
         }
     };
     
+    std::string get_current_directory();
+
     bool copy_file(const std::string& source, const std::string& target);
     bool delete_file(const std::string& source);
     bool delete_empty_directory(const std::string& source);
     bool create_directory(const std::string& path);
     bool does_directory_exist(const std::string& path);
+    bool does_file_exist(const std::string& path);
     
 
 }

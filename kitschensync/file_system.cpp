@@ -6,6 +6,27 @@
 
 namespace file_system
 {
+    std::string get_current_directory()
+    {
+        std::vector<char> buffer;
+        buffer.resize(MAX_PATH);
+
+        if (::GetCurrentDirectory(MAX_PATH, &buffer[0]))
+        {
+            return std::string(&buffer[0]);
+        }
+        printf("ERROR %ld, GetCurrentDirectory() failed", GetLastError());
+        return "";
+    }
+    
+    bool does_file_exist(const std::string& path)
+    {
+        DWORD dwAttrib = ::GetFileAttributes(path.c_str());
+
+        return (dwAttrib != INVALID_FILE_ATTRIBUTES)
+            && !(dwAttrib & FILE_ATTRIBUTE_DIRECTORY);
+    }
+
     bool does_directory_exist(const std::string& path)
     {
         // taken from http://stackoverflow.com/questions/6218325/how-do-you-check-if-a-directory-exists-on-windows-in-c

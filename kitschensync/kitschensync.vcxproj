@@ -146,6 +146,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="console_app.h" />
     <ClInclude Include="directory_comparer.h" />
     <ClInclude Include="directory_mismatch.h" />
     <ClInclude Include="directory_description.h" />
@@ -158,6 +159,7 @@
     <ClInclude Include="utilities.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="console_app.cpp" />
     <ClCompile Include="directory_comparer.cpp" />
     <ClCompile Include="directory_mismatch.cpp" />
     <ClCompile Include="directory_description.cpp" />
