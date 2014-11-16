@@ -99,11 +99,11 @@ void directory_mismatch::dump() const
                 assert(false);
             }
         }
+    }
 
-        for (auto var : m_directory_mismatches)
-        {
-            var->dump();
-        }
+    for (auto var : m_directory_mismatches)
+    {
+        var->dump();
     }
 }
 

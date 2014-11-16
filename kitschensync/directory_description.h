@@ -3,6 +3,28 @@
 
 #include "file_description.h"
 
+struct directory_stats
+{
+    long long m_total_files;
+    long long m_total_bytes;
+    long long m_total_directories;
+
+    directory_stats()
+        :
+        m_total_files(0),
+        m_total_bytes(0),
+        m_total_directories(0)
+    {
+    }
+
+    void operator +=(const directory_stats& input)
+    {
+        m_total_bytes += input.m_total_bytes;
+        m_total_files += input.m_total_files;
+        m_total_directories += input.m_total_directories;
+    }
+};
+
 class directory_description
 {
 public:
@@ -38,38 +60,19 @@ public:
 
     std::string get_in_path(const char* part) const;
 
-    long long total_files() const
+    directory_stats get_stats() const
     {
-        long long result = m_files.size();
-        
-        for (auto var : m_subdirectories)
-        {
-            result += var.second->total_files();
-        }
-        return result;
-    }
-
-    long long total_bytes() const
-    {
-        long long result = 0;
-
+        directory_stats result;
         for (auto var : m_files)
         {
-            result += var.second->get_file_size();
+            result.m_total_bytes += var.second->get_file_size();
         }
-        for (auto var : m_subdirectories)
-        {
-            result += var.second->total_bytes();
-        }
-        return result;
-    }
+        result.m_total_files = m_files.size();
+        result.m_total_directories += m_subdirectories.size();
 
-    long long total_subdirectories() const
-    {
-        long long result = m_subdirectories.size();
         for (auto var : m_subdirectories)
         {
-            result += var.second->total_subdirectories();
+            result += var.second->get_stats();
         }
         return result;
     }

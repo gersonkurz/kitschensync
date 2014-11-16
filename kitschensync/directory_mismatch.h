@@ -48,18 +48,19 @@ public:
     }
     virtual ~directory_mismatch();
 
+public:
     void dump() const;
 
     relationship_order determine_relationship(const directory_description** pa, const directory_description** pb) const;
-    relationship_order determine_relationship_order() const;
 
     void apply_changes(relationship_order ro, directory_sync_mode dsm) const;
 
 private:
-    directory_mismatch(const directory_mismatch& objectSrc);
-    directory_mismatch& operator=(const directory_mismatch& objectSrc);
+    directory_mismatch(const directory_mismatch&);
+    directory_mismatch& operator=(const directory_mismatch&);
 
 private:
+    relationship_order determine_relationship_order() const;
 
     static void copy_missing_objects(
         const directory_description* target,
